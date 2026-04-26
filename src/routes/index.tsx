@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
-import { MapView } from "@/components/MapView";
+import { MapViewLazy as MapView } from "@/components/MapViewLazy";
 import { TruthBox } from "@/components/TruthBox";
 import { AdminDrawer } from "@/components/AdminDrawer";
 
