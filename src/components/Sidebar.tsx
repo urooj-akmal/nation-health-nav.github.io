@@ -31,13 +31,13 @@ export function Sidebar() {
     setLoading(true);
     setResults([]);
     selectFacility(null);
-    const t0 = [performance.now](http://performance.now)();
+    const t0 = performance.now();
     for (let i = 0; i < LOADING_STEPS.length; i++) {
       setLoadingStep(i);
       await new Promise((r) => setTimeout(r, 2000));
     }
     setResults(MOCK_RESULTS.slice(0, topN));
-    setLastLatency(Math.round([performance.now](http://performance.now)() - t0));
+    setLastLatency(Math.round(performance.now() - t0));
     setLoading(false);
     setLoadingStep(0);
   };
