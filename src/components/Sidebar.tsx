@@ -32,11 +32,41 @@ export function Sidebar() {
     setResults([]);
     selectFacility(null);
     const t0 = performance.now();
+
+    // Kick off the real API request in parallel with the loading animation
+    const fetchPromise = fetch("/api/search", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        free_text: freeText,
+        departments,
+        state: state || null,
+        top_n: topN,
+      }),
+    })
+      .then(async (r) => {
+        if (!r.ok) throw new Error(`API ${r.status}`);
+        const data = await r.json();
+        if (!Array.isArray(data)) throw new Error("Bad response shape");
+        return data;
+      })
+      .catch((err) => {
+        console.warn("Search API failed, using mock data:", err);
+        return null;
+      });
+
     for (let i = 0; i < LOADING_STEPS.length; i++) {
       setLoadingStep(i);
       await new Promise((r) => setTimeout(r, 2000));
     }
-    setResults(MOCK_RESULTS.slice(0, topN));
+
+    const apiResults = await fetchPromise;
+    const finalResults =
+      apiResults && apiResults.length > 0
+        ? apiResults.slice(0, topN)
+        : MOCK_RESULTS.slice(0, topN);
+
+    setResults(finalResults);
     setLastLatency(Math.round(performance.now() - t0));
     setLoading(false);
     setLoadingStep(0);
